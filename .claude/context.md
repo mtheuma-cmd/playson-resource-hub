@@ -25,7 +25,7 @@ flowchart LR
 ## Design decisions
 
 - Decks are created in this repository and published by a catalog entry plus a git push. The hub does not fetch decks from other sites.
-- Routes are path-based (`/`, `/decks/<slug>`, `/design-system`) so GitHub Pages can serve them with the `404.html` copy of `index.html`.
+- Routes are path-based (`/`, `/decks/<slug>`, `/design-system`) so GitHub Pages can serve them with the `404.html` copy of `index.html`. Pages publishes from the `Deploy resource hub` workflow to `https://mtheuma-cmd.github.io/playson-resource-hub/`.
 - Slide deep links stay in the URL hash (`#slide=<id>`) so they survive player navigation without changing the deck path.
 - Sales content is INTERNAL. Do not add customer data, unreleased metrics, or confidential commercial terms.
 

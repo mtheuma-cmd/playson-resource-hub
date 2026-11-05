@@ -33,4 +33,4 @@ Use `status: "draft"` until the deck should appear on the hosted hub.
 
 ## Hosting
 
-Push to the default branch and let GitHub Pages publish the `dist` output. Keep the site private. INTERNAL sales content.
+Push to `main`. GitHub Actions builds `dist` and publishes GitHub Pages at `https://mtheuma-cmd.github.io/playson-resource-hub/`. The workflow sets `VITE_BASE` to the repository name.
