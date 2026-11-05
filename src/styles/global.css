@@ -73,6 +73,23 @@ a {
   padding: 10px 16px;
 }
 
+button.app-nav__link {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+button.app-nav__link:disabled {
+  cursor: progress;
+}
+
+.app-nav__sync-status {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .app-nav__link:hover,
 .app-nav__link[aria-current="page"] {
   background: var(--surface-card);

@@ -1,18 +1,33 @@
 import { useState } from "react";
 import { Countdown, removalDateLabel } from "../catalog/Countdown";
-import { hubCards, hubCategories } from "../catalog/hub";
-import type { CatalogDeck } from "../catalog/registry";
+import { hubCards, hubCategories, hubLinkCards, type HubCategory } from "../catalog/hub";
+import type { CatalogDeck, CatalogLink } from "../catalog/registry";
 import { PlaysonParticles } from "../design-system/components";
 import { brandAssets } from "../design-system/tokens";
 import { asset } from "../lib/asset";
 import { withBase } from "../lib/routes";
 import "./hub-page.css";
 
-export function HubPage({ entries }: { entries: CatalogDeck[] }) {
-  const cards = hubCards(entries);
+export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: CatalogLink[] }) {
+  const cards = [...hubCards(entries), ...hubLinkCards(links)];
   const categories = hubCategories(cards);
   const [category, setCategory] = useState("all");
-  const visible = cards.filter((card) => category === "all" || card.category === category);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const visible = cards.filter(
+    (card) => category === "all" || card.category === category || card.parentCategory === category,
+  );
+
+  function selectCategory(id: string) {
+    const hasChildren = categories.some((item) => item.parentId === id);
+    if (hasChildren) {
+      setCategory(id);
+      setOpenMenu((current) => (current === id && category === id ? null : id));
+      return;
+    }
+    const parentId = categories.find((item) => item.id === id)?.parentId;
+    setCategory(id);
+    setOpenMenu(parentId ?? null);
+  }
 
   return (
     <main className="hub">
@@ -28,18 +43,26 @@ export function HubPage({ entries }: { entries: CatalogDeck[] }) {
           <nav className="hub-categories" aria-label="Categories">
             <h2>Categories</h2>
             <ul>
-              {categories.map((item) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    aria-pressed={category === item.id}
-                    onClick={() => setCategory(item.id)}
-                  >
-                    <span>{item.label}</span>
-                    <span className="hub-categories__count">{item.count}</span>
-                  </button>
-                </li>
-              ))}
+              {categories
+                .filter((item) => !item.parentId)
+                .map((item) => (
+                  <li key={item.id}>
+                    <CategoryButton
+                      item={item}
+                      selected={category === item.id}
+                      expanded={openMenu === item.id}
+                      hasChildren={categories.some((child) => child.parentId === item.id)}
+                      onSelect={selectCategory}
+                    />
+                    <CategoryChildren
+                      categories={categories}
+                      parentId={item.id}
+                      open={openMenu === item.id}
+                      selected={category}
+                      onSelect={selectCategory}
+                    />
+                  </li>
+                ))}
             </ul>
           </nav>
           {visible.length === 0 ? (
@@ -48,7 +71,12 @@ export function HubPage({ entries }: { entries: CatalogDeck[] }) {
             <ul className="hub-grid">
               {visible.map((card) => (
                 <li key={card.id}>
-                  <a className="hub-card" href={withBase(card.path)}>
+                  <a
+                    className="hub-card"
+                    href={card.external ? card.href : withBase(card.href)}
+                    target={card.external ? "_blank" : undefined}
+                    rel={card.external ? "noopener noreferrer" : undefined}
+                  >
                     <p className="hub-card__category">{card.category}</p>
                     <h2>{card.title}</h2>
                     <p className="hub-card__summary">{card.summary}</p>
@@ -70,6 +98,98 @@ export function HubPage({ entries }: { entries: CatalogDeck[] }) {
         <p>Resource Hub</p>
       </footer>
     </main>
+  );
+}
+
+function CategoryButton({
+  item,
+  selected,
+  expanded = false,
+  hasChildren = false,
+  onSelect,
+}: {
+  item: HubCategory;
+  selected: boolean;
+  expanded?: boolean;
+  hasChildren?: boolean;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      aria-expanded={hasChildren ? expanded : undefined}
+      onClick={() => onSelect(item.id)}
+    >
+      <span className="hub-categories__name">
+        <span>{item.label}</span>
+        {item.removeOn && <CategoryTimer removeOn={item.removeOn} />}
+      </span>
+      <span className="hub-categories__aside">
+        <span className="hub-categories__count">{item.count}</span>
+        {hasChildren && (
+          <svg className="hub-categories__chevron" viewBox="0 0 12 12" aria-hidden="true">
+            <path
+              d="M2.5 4.5 6 8l3.5-3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </span>
+    </button>
+  );
+}
+
+function CategoryTimer({ removeOn }: { removeOn: string }) {
+  return (
+    <span className="hub-categories__timer">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <path
+          d="M12 7.5V12l3 2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <span className="hub-categories__timer-panel">
+        <Countdown removeOn={removeOn} placement="pop" />
+      </span>
+    </span>
+  );
+}
+
+function CategoryChildren({
+  categories,
+  parentId,
+  open,
+  selected,
+  onSelect,
+}: {
+  categories: HubCategory[];
+  parentId: string;
+  open: boolean;
+  selected: string;
+  onSelect: (id: string) => void;
+}) {
+  const children = categories.filter((item) => item.parentId === parentId);
+  if (children.length === 0) return null;
+  return (
+    <div className={`hub-categories__menu${open ? " is-open" : ""}`}>
+      <ul inert={open ? undefined : true}>
+        {children.map((item) => (
+          <li key={item.id}>
+            <CategoryButton item={item} selected={selected === item.id} onSelect={onSelect} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

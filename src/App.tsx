@@ -1,6 +1,12 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Countdown } from "./catalog/Countdown";
-import { categoryRemovalDate, findVisibleDeck, visibleCatalog, type CatalogDeck } from "./catalog/registry";
+import {
+  categoryRemovalDate,
+  findVisibleDeck,
+  visibleCatalog,
+  visibleCatalogLinks,
+  type CatalogDeck,
+} from "./catalog/registry";
 import { DeckPlayer } from "./deck/DeckPlayer";
 import type { DeckData } from "./deck/schema";
 import { brandAssets } from "./design-system/tokens";
@@ -21,6 +27,38 @@ const DesignSystemPage = showInternalSections
       })),
     )
   : null;
+
+function SyncWebflowButton() {
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function sync() {
+    setPending(true);
+    setMessage("");
+    try {
+      const response = await fetch("/__hub/sync-webflow", { method: "POST" });
+      const body = (await response.json()) as { ok?: boolean; message?: string };
+      if (!response.ok || !body.ok) {
+        setMessage(body.message || "Sync failed");
+        setPending(false);
+        return;
+      }
+      window.location.reload();
+    } catch {
+      setMessage("Sync failed");
+      setPending(false);
+    }
+  }
+
+  return (
+    <>
+      <button type="button" className="app-nav__link" onClick={() => void sync()} disabled={pending}>
+        {pending ? "Syncing…" : "Sync Instant Views and Roadmaps"}
+      </button>
+      {message && <span className="app-nav__sync-status">{message}</span>}
+    </>
+  );
+}
 
 function usePathname() {
   const [pathname, setPathname] = useState(window.location.pathname);
@@ -79,6 +117,7 @@ export default function App() {
     [isArchive, sourceDeck],
   );
   const decks = visibleCatalog(showInternalSections);
+  const links = visibleCatalogLinks(showInternalSections);
   const removalDate = entry ? categoryRemovalDate(entry.category) : undefined;
 
   useEffect(() => {
@@ -119,13 +158,16 @@ export default function App() {
             </a>
           )}
           {showInternalSections && !isDeckRoute && (
-            <a
-              className="app-nav__link"
-              href={withBase("/design-system")}
-              aria-current={isDocs ? "page" : undefined}
-            >
-              Design system
-            </a>
+            <>
+              <SyncWebflowButton />
+              <a
+                className="app-nav__link"
+                href={withBase("/design-system")}
+                aria-current={isDocs ? "page" : undefined}
+              >
+                Design system
+              </a>
+            </>
           )}
         </div>
       </nav>
@@ -138,7 +180,7 @@ export default function App() {
       ) : isDeckRoute ? (
         <MissingDeck />
       ) : (
-        <HubPage entries={decks} />
+        <HubPage entries={decks} links={links} />
       )}
     </>
   );

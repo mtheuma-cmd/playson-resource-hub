@@ -22,6 +22,14 @@ npm run export-pdf
 
 Use `status: "draft"` until the deck should appear on the hosted hub.
 
+## Publish a link
+
+1. Add the category in `catalogCategories`. Set `parent` when it belongs under another category.
+2. Add the public URL to `catalogLinks`.
+3. Push the repository to publish.
+
+Games / Instant Views holds the game Instant View links.
+
 ## Local routes
 
 - Hub: `http://127.0.0.1:5173/`
@@ -29,6 +37,7 @@ Use `status: "draft"` until the deck should appear on the hosted hub.
 - Blitz Mode: `http://127.0.0.1:5173/decks/blitz-mode`
 - Blasts & Races: `http://127.0.0.1:5173/decks/blasts-races` (hidden from 1 June 2027, local calendar date)
 - Design system (dev only): `http://127.0.0.1:5173/design-system`
+- Sync Instant Views and Roadmaps (dev only, local nav button): refreshes those cards from Webflow. The button is not in the GitHub Pages build.
 - Archived Promo Tools slides (dev only): `http://127.0.0.1:5173/decks/promo-tools#section=archive`
 
 ## Hosting
