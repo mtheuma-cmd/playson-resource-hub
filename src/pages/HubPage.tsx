@@ -13,9 +13,8 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
   const categories = hubCategories(cards);
   const [category, setCategory] = useState("all");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const visible = cards.filter(
-    (card) => category === "all" || card.category === category || card.parentCategory === category,
-  );
+  const childCategories = categories.filter((item) => item.parentId === category);
+  const visible = cards.filter((card) => category === "all" || card.category === category);
 
   function selectCategory(id: string) {
     const hasChildren = categories.some((item) => item.parentId === id);
@@ -65,7 +64,20 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
                 ))}
             </ul>
           </nav>
-          {visible.length === 0 ? (
+          {childCategories.length > 0 ? (
+            <ul className="hub-grid">
+              {childCategories.map((item) => (
+                <li key={item.id}>
+                  <button type="button" className="hub-card" onClick={() => selectCategory(item.id)}>
+                    <p className="hub-card__category">{category}</p>
+                    <h2>{item.label}</h2>
+                    <p className="hub-card__summary">{item.count} published</p>
+                    <span className="hub-card__action">Open</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : visible.length === 0 ? (
             <p className="hub-empty">Nothing is published in this category.</p>
           ) : (
             <ul className="hub-grid">

@@ -65,10 +65,14 @@ export function hubCategories(cards: HubCard[]): HubCategory[] {
   for (const label of activeCategoryLabels()) counts.set(label, 0);
   for (const card of cards) {
     counts.set(card.category, (counts.get(card.category) ?? 0) + 1);
-    if (card.parentCategory) {
-      counts.set(card.parentCategory, (counts.get(card.parentCategory) ?? 0) + 1);
-    }
   }
+  const childCounts = new Map<string, number>();
+  for (const label of counts.keys()) {
+    const parent = categoryParent(label);
+    if (!parent) continue;
+    childCounts.set(parent, (childCounts.get(parent) ?? 0) + 1);
+  }
+  for (const [parent, count] of childCounts) counts.set(parent, count);
   return [
     { id: "all", label: "All", count: cards.length },
     ...[...counts.entries()].map(([label, count]) => ({
