@@ -178,17 +178,19 @@
 }
 
 .hub-clock__panel {
-  background: rgb(7 8 16 / 96%);
+  background: #080c1b;
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  box-shadow: var(--glow-hover);
-  left: calc(100% + 26px);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 70%), var(--glow-hover);
+  bottom: calc(100% + 10px);
+  left: auto;
   opacity: 0;
   padding: 8px 10px;
   pointer-events: none;
   position: absolute;
-  top: 18px;
-  transform: translateX(6px);
+  right: 0;
+  top: auto;
+  transform: translateY(8px);
   transition:
     opacity 160ms ease,
     transform 160ms ease,
@@ -201,7 +203,7 @@
 .hub-clock:focus-within .hub-clock__panel {
   opacity: 1;
   pointer-events: auto;
-  transform: none;
+  transform: translateY(0);
   visibility: visible;
 }
 
@@ -363,9 +365,7 @@
   }
 
   .hub-clock__panel {
-    left: auto;
-    right: 46px;
-    top: 18px;
+    right: 0;
   }
 
   .hub-card {
