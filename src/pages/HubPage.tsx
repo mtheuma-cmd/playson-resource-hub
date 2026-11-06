@@ -13,8 +13,18 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
   const categories = hubCategories(cards);
   const [category, setCategory] = useState("all");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const childCategories = categories.filter((item) => item.parentId === category);
-  const visible = cards.filter((card) => category === "all" || card.category === category);
+  const search = query.trim().toLowerCase();
+  const visible = cards.filter((card) => {
+    const inCategory =
+      category === "all" ||
+      card.category === category ||
+      (childCategories.length > 0 && card.parentCategory === category);
+    if (!inCategory) return false;
+    if (!search) return category === "all" || card.category === category;
+    return [card.title, card.summary, card.category, card.meta].join(" ").toLowerCase().includes(search);
+  });
 
   function selectCategory(id: string) {
     const hasChildren = categories.some((item) => item.parentId === id);
@@ -34,6 +44,15 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
       <header className="hub-intro">
         <h1>Resource Hub</h1>
         <p>All your Playson needs, in one place.</p>
+        <form className="hub-search" role="search" onSubmit={(event) => event.preventDefault()}>
+          <input
+            type="search"
+            value={query}
+            placeholder="Search"
+            aria-label="Search resources"
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </form>
       </header>
       {cards.length === 0 ? (
         <p className="hub-empty">No decks are published yet.</p>
@@ -64,12 +83,12 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
                 ))}
             </ul>
           </nav>
-          {childCategories.length > 0 ? (
+          {childCategories.length > 0 && !search ? (
             <ul className="hub-grid">
               {childCategories.map((item) => (
                 <li key={item.id}>
                   <button type="button" className="hub-card" onClick={() => selectCategory(item.id)}>
-                    <p className="hub-card__category">{category}</p>
+                    <CategoryTag label={item.label} />
                     <h2>{item.label}</h2>
                     <p className="hub-card__summary">{item.count} published</p>
                     <span className="hub-card__action">Open</span>
@@ -78,7 +97,9 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
               ))}
             </ul>
           ) : visible.length === 0 ? (
-            <p className="hub-empty">Nothing is published in this category.</p>
+            <p className="hub-empty">
+              {search ? "No resources match that search." : "Nothing is published in this category."}
+            </p>
           ) : (
             <ul className="hub-grid">
               {visible.map((card) => (
@@ -89,7 +110,7 @@ export function HubPage({ entries, links }: { entries: CatalogDeck[]; links: Cat
                     target={card.external ? "_blank" : undefined}
                     rel={card.external ? "noopener noreferrer" : undefined}
                   >
-                    <p className="hub-card__category">{card.category}</p>
+                    <CategoryTag label={card.category} />
                     <h2>{card.title}</h2>
                     <p className="hub-card__summary">{card.summary}</p>
                     <p className="hub-card__meta">
@@ -134,7 +155,8 @@ function CategoryButton({
       onClick={() => onSelect(item.id)}
     >
       <span className="hub-categories__name">
-        <span>{item.label}</span>
+        <CategoryTag label={item.label} mark />
+        <span className="hub-categories__label">{item.label}</span>
         {item.removeOn && <CategoryTimer removeOn={item.removeOn} />}
       </span>
       <span className="hub-categories__aside">
@@ -153,6 +175,14 @@ function CategoryButton({
         )}
       </span>
     </button>
+  );
+}
+
+function CategoryTag({ label, mark = false }: { label: string; mark?: boolean }) {
+  return (
+    <span className={`hub-tag${mark ? " hub-tag--mark" : ""}`} data-category={label}>
+      {mark ? null : label}
+    </span>
   );
 }
 

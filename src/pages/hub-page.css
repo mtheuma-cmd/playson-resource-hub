@@ -53,6 +53,31 @@
   max-width: 640px;
 }
 
+.hub-search {
+  margin: 28px auto 0;
+  max-width: 640px;
+}
+
+.hub-search input {
+  background: rgb(255 255 255 / 6%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 20px;
+  width: 100%;
+}
+
+.hub-search input::placeholder {
+  color: var(--text-secondary);
+}
+
+.hub-search input:focus-visible {
+  outline: none;
+}
+
 .hub-layout {
   align-items: start;
   display: grid;
@@ -108,6 +133,7 @@
 .hub-categories__name {
   align-items: center;
   display: flex;
+  flex: 1;
   gap: 8px;
   min-width: 0;
 }
@@ -187,19 +213,77 @@
   width: 100%;
 }
 
-.hub-categories__name > span:first-child {
+.hub-tag {
+  --hub-tag: var(--brand-gray-400);
+  align-self: flex-start;
+  background: color-mix(in srgb, var(--hub-tag) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hub-tag) 72%, white);
+  border-radius: var(--radius-pill);
+  color: color-mix(in srgb, var(--hub-tag) 42%, white);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+
+.hub-tag[data-category="Power Pack"] {
+  --hub-tag: var(--color-red);
+}
+
+.hub-tag[data-category="Blitz Mode"] {
+  --hub-tag: var(--brand-blue);
+}
+
+.hub-tag[data-category="Blasts & Races"] {
+  --hub-tag: var(--brand-green);
+}
+
+.hub-tag[data-category="Games"] {
+  --hub-tag: var(--brand-purple);
+}
+
+.hub-tag[data-category="Instant Views"] {
+  --hub-tag: #c4b5fd;
+}
+
+.hub-tag[data-category="Roadmaps"] {
+  --hub-tag: var(--brand-magenta);
+}
+
+.hub-card .hub-tag {
+  font-size: 10px;
+  padding: 4.5px 8px;
+}
+
+.hub-tag--mark {
+  background: var(--hub-tag);
+  border: 0;
+  border-radius: 50%;
+  flex: none;
+  height: 10px;
+  padding: 0;
+  width: 10px;
+}
+
+.hub-categories__label {
   background-image: linear-gradient(var(--content-highlight), var(--content-highlight));
   background-position: 0 100%;
   background-repeat: no-repeat;
   background-size: 0 2px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: background-size 220ms ease;
+  white-space: nowrap;
 }
 
 .hub-categories button:hover:not([aria-pressed="true"]) {
   color: var(--text-primary);
 }
 
-.hub-categories button:hover:not([aria-pressed="true"]) .hub-categories__name > span:first-child {
+.hub-categories button:hover:not([aria-pressed="true"]) .hub-categories__label {
   background-size: 100% 2px;
 }
 
@@ -228,6 +312,7 @@
 }
 
 .hub-grid > li {
+  container-type: inline-size;
   position: relative;
 }
 
@@ -315,9 +400,10 @@ button.hub-card {
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-height: 248px;
-  padding: 24px;
+  gap: clamp(8px, 3.6cqw, 12px);
+  height: clamp(240px, 97cqw, 320px);
+  padding: clamp(16px, 7cqw, 24px);
+  width: 100%;
   position: relative;
   transition:
     background 220ms ease,
@@ -350,11 +436,16 @@ button.hub-card {
 }
 
 .hub-card h2 {
-  font-size: 28px;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  font-size: clamp(20px, 8.5cqw, 28px);
   font-weight: 700;
   letter-spacing: -0.03em;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   line-height: 1.05;
   margin: 0;
+  overflow: hidden;
 }
 
 .hub-card__summary {
@@ -362,7 +453,7 @@ button.hub-card {
   color: var(--text-secondary);
   display: -webkit-box;
   flex: 1;
-  font-size: 16px;
+  font-size: clamp(14px, 4.85cqw, 16px);
   font-weight: 600;
   -webkit-line-clamp: 3;
   line-height: 1.45;
@@ -470,10 +561,6 @@ button.hub-card {
     right: 0;
   }
 
-  .hub-card {
-    min-height: 0;
-  }
-
   .hub-footer {
     align-items: flex-start;
     flex-direction: column;
@@ -490,7 +577,7 @@ button.hub-card {
     transition: none;
   }
 
-  .hub-categories__name > span:first-child,
+  .hub-categories__label,
   .hub-categories__menu,
   .hub-categories__chevron,
   .hub-categories__timer-panel {
