@@ -26,6 +26,7 @@ flowchart LR
 ## Design decisions
 
 - Decks are created in this repository and published by a catalog entry plus a git push. The hub does not fetch decks from other sites. A link card points at an already published page and does not copy that page into a deck.
+- Power Pack media-panel videos for Flexible Free Spins, Grand Race, Turbo Races, and Power Blasts stream from media.playson.com. They are not stored in this repository. Power Chance still uses a local video.
 - Routes are path-based (`/`, `/decks/<slug>`, `/design-system`) so GitHub Pages can serve them with the `404.html` copy of `index.html`. Pages publishes from the `Deploy resource hub` workflow to `https://mtheuma-cmd.github.io/playson-resource-hub/`.
 - Slide deep links stay in the URL hash (`#slide=<id>`) so they survive player navigation without changing the deck path.
 - Sales content is INTERNAL. Do not add customer data, unreleased metrics, or confidential commercial terms.

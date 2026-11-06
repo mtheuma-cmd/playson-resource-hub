@@ -35,7 +35,7 @@ const toolModules: ToolModuleContent[] = [
     avoidWhen: "Public competition, a leaderboard or a shared prize pool. Check out Grand Race or Turbo Races instead!",
     proof: "20% lower Free Spins abandonment.\nPlayers selected 50% higher bets on average by choosing fewer spins.",
     overviewBackgroundSrc: "/promo-assets/Flexi_Spins-BACKGROUND_Horizontal.jpg",
-    mediaSrc: "/promo-assets/Flexible-Free-Spins-Promo-Video.mp4",
+    mediaSrc: "https://media.playson.com/fm/2026-new-promo-tools/Flexible-Free-Spins/Flexible-Free-Spins-Promo-Video.mp4",
     mediaLabel: "Product screenshot / video still",
     callouts: [
       "Standard Free Spins fix both the bet and number of spins.",
@@ -68,7 +68,7 @@ const toolModules: ToolModuleContent[] = [
     avoidWhen: "If you need a quick prime-time burst or an instant in-session reward. Check out Turbo Races and Power Blasts instead!",
     proof: "Across analysed network offers, participating slots recorded +200% users, +58% total bets and +64% rounds in three-day before/after windows.",
     overviewBackgroundSrc: "/promo-assets/Grand_Race-BG.png",
-    mediaSrc: "/promo-assets/Grand-Race-browser.mp4",
+    mediaSrc: "https://media.playson.com/fm/2026-new-promo-tools/Grand-Race/Grand-Race-_finalSD_02.mp4",
     mediaLabel: "Product screenshot / video still",
     callouts: [
       "Players opt in from the game and start earning points.",
@@ -98,7 +98,7 @@ const toolModules: ToolModuleContent[] = [
     useWhen: "Use it for daily activity peaks, short prize cycles and repeat competition without a long campaign commitment.",
     avoidWhen: "Multi-day leaderboard or a personal in-session reward. Check out Grand Race and Power Blasts instead!",
     overviewBackgroundSrc: "/promo-assets/Turbo_Races-BG.png",
-    mediaSrc: "https://playson.com/fm/2026-new-promo-tools/Turbo-Races/Turbo-Races---promo-video.mp4",
+    mediaSrc: "https://media.playson.com/fm/2026-new-promo-tools/Turbo-Races/Turbo-Races---promo-video.mp4",
     mediaLabel: "Product screenshot / video still",
     callouts: [
       "Players join directly from the game.",
@@ -128,7 +128,7 @@ const toolModules: ToolModuleContent[] = [
     useWhen: "Create an in-session reward moment with cash, Free Spins, multipliers or Bonus Game entry.",
     avoidWhen: "A scheduled public tournament or a leaderboard campaign. Check our Grand Race and Turbo Races!",
     overviewBackgroundSrc: "/promo-assets/Power_Blast-BG.png",
-    mediaSrc: "/promo-assets/Power-Blast-browser.mp4",
+    mediaSrc: "https://media.playson.com/fm/2026-new-promo-tools/Power-Blasts/Power-Blast_final_new-SD_01.mp4",
     mediaLabel: "Product screenshot / video still",
     callouts: [
       "Players opt in and start playing.",
